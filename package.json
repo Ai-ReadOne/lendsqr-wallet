@@ -1,0 +1,23 @@
+{
+  "name": "lendsqr-wallet",
+  "version": "1.0.0",
+  "description": "this is an e-wallet backup service",
+  "main": "cmd/wallet.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wallet",
+    "e-wallet"
+  ],
+  "author": "Aransiola Ibrahim Ridwan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "knex": "^2.3.0"
+  }
+}
