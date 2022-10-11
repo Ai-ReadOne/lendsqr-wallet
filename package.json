@@ -1,23 +1,44 @@
 {
   "name": "lendsqr-wallet",
   "version": "1.0.0",
-  "description": "this is an e-wallet backup service",
-  "main": "cmd/wallet.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "description": "lendsqr demo wallet",
+  "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn cmd/wallet.ts",
+    "knex": "knex --knexfile db/knexfile.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ai-ReadOne/lendsqr-wallet.git"
   },
   "keywords": [
     "wallet",
-    "e-wallet"
+    "e-wallet",
+    "demo",
+    "wallet"
   ],
   "author": "Aransiola Ibrahim Ridwan",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ai-ReadOne/lendsqr-wallet/issues"
+  },
+  "homepage": "https://github.com/Ai-ReadOne/lendsqr-wallet#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.8.3",
+    "@types/uuid": "^8.3.4",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.4"
+  },
   "dependencies": {
-    "body-parser": "^1.20.0",
-    "express": "^4.18.1",
-    "knex": "^2.3.0"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "knex": "^2.3.0",
+    "mysql2": "^2.3.3",
+    "path": "^0.12.7",
+    "remove": "^0.1.5",
+    "uuid": "^9.0.0"
   }
 }
