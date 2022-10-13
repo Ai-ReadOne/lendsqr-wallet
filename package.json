@@ -5,8 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn cmd/wallet.ts",
-    "knex": "knex --knexfile db/knexfile.ts"
+    "dev": "ts-node-dev --respawn cmd/wallet.ts"
   },
   "repository": {
     "type": "git",

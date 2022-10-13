@@ -1,11 +1,18 @@
 import { knex } from 'knex';
-import { DBConfig } from '../db/knexfile';
+import dotenv from 'dotenv';
 
-const database = knex(DBConfig);
 
-// verify connection
-// database.raw("SELECT VERSION()").then(() => {
+import DBConfig from '../knexfile';
+
+dotenv.config({path: '../.env'});
+
+
+const DBConnection = knex(DBConfig);
+
+// const database = knex(DBConfig);
+// .raw("SELECT VERSION()").then(() => {
 //     console.log(`connected to database successfully`);
 // });
 
-export default database;
+
+export default DBConnection;

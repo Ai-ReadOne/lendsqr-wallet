@@ -1,13 +1,13 @@
 import express from 'express';
 
+import { CreateUserController, GetUsersController } from '../controllers/user';
+
 export const router = express.Router();
 
 // admin users endpoints
 router.route("/users")
-.post((req, res) => {
-    res.send("created user successfully !")
-})
-.get()
+.post(CreateUserController)
+.get(GetUsersController)
 
 router.route("/users/:user_id")
 .get()
