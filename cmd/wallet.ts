@@ -1,20 +1,22 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-
 import {router} from '../settings/routes';
-import database from '../config/database';
+import DBConnection from '../config/database';
+
 
 const wallet = express();
-dotenv.config();
+dotenv.config({path: '../.env'});
 
 const port = process.env.HOST || 8080
 
-database.raw("SELECT VERSION()").then(() => {
-    console.log(`connected to database successfully`);
-});
+// verify database connection
+DBConnection.raw("SELECT VERSION()").then(() => {
+        console.log(`connected to database successfully`);
+  }).catch((e) => {
+    console.log(e);
+  });
 
-console.log(database.client.config);
 // parse JSON bodies (as sent by API clients)
 wallet.use(express.json());
 
