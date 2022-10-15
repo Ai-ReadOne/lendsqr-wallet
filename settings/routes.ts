@@ -1,18 +1,16 @@
 import express from 'express';
 
-import { CreateUserController, GetUsersController } from '../controllers/user';
+import {Users} from '../controllers/user';
 
 export const router = express.Router();
 
-// admin users endpoints
-router.route("/users")
-.post(CreateUserController)
-.get(GetUsersController)
+const user = new Users();
 
-router.route("/users/:user_id")
-.get()
-.put()  
-.delete()
+//users endpoints
+router.route("/users")
+.post(user.CreateUserController)
+.get(user.GetUserController)
+.put(user.UpdateUserController)  
 
 // admin wallets endpoits
 router.route("/wallets")
@@ -22,26 +20,26 @@ router.route("/wallets")
 router.route("/wallets/:wallet_id")
 .get()
 .put()
-.delete()
 
 // admin transactions endpoints
 router.route("/transactions")
-.post()
 .get()
 
 router.route("/transactions/:wallet_id")
 .get()
-.put()
-.delete()
 
-// user endpoint
-router.route("/user/:user_id")
-.get()
-.put()
-.delete()
+// admin users endpoint
+router.route("/admin/users")
+.post(user.CreateUserController)
+.get(user.GetUsersController)
+
+router.route("/admin/users/:user_id")
+.get(user.AdminGetUserController)
+.put(user.AdminUpdateUserController)
+.delete(user.DeleteUserController)
 
 // user wallet endpoint
-router.route("/user/:user_id/wallet/:wallet_id")
+router.route("/admin/:user_id/wallet/:wallet_id")
 .get()
 .put()
 
