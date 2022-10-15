@@ -1,5 +1,4 @@
 
-
 type User = {
     ID: string;
     FirstName: string;
@@ -7,7 +6,8 @@ type User = {
     Email: string;
     Phone: number;
     Address: string;
-    Bvn: Number;
+    Bvn: number;
+    IsAdmin: boolean
     CreatedAt: Date;
     UpdatedAt: Date;
 };

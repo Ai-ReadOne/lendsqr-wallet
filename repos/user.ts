@@ -15,31 +15,33 @@ dotenv.config({path: '../.env'});
 //     DeleteUser(companyId: string, userId: string, user: User): string | void;
 // }
 
-export function CreateUser(user: User): any{
- const res = DBConnection('user').insert(user).then((result) => {
-    console.log(result);
-    return result;
+class Users {
 
-  }).catch((e) => {
-    console.log(e.code);
-    console.log(e.sqlMessage);
-    // return e;
-  });
-  // console.log('console mxessage', res);
+  CreateUser(user: User): any{
+    const res = DBConnection('user').insert(user).then((result) => {
+       console.log(result);
+       return result;
+   
+     }).catch((e) => {
+       console.log(e.code);
+       console.log(e.sqlMessage);
+       // return e;
+     });
+     // console.log('console mxessage', res);
+   
+     return res;
+   }
 
-  return res;
-}
-
-
-export function GetUsers(): any{
- const res = DBConnection.select().from('user').then((result) => {
-    console.log(result);
-    return result;
-  }).catch((e) => {
-    console.log(e.code);
-    console.log(e.sqlMessage);
-  });;
-
-
-  return res;
+   GetUsers(): any{
+    const res = DBConnection.select().from('user').then((result) => {
+       console.log(result);
+       return result;
+     }).catch((e) => {
+       console.log(e.code);
+       console.log(e.sqlMessage);
+     });
+   
+   
+     return res;
+   }
 }

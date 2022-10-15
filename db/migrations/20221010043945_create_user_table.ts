@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('last_name').notNullable();
         table.string('email').notNullable().unique();
         table.bigInteger('phone').notNullable().unique();
+        table.boolean('is_admin').defaultTo(false);
         table.string('address').notNullable().unique();
         table.bigInteger('bvn').notNullable().unique();
         table.timestamp('created_at').defaultTo(knex.fn.now());
