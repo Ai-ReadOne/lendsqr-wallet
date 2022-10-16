@@ -1,10 +1,12 @@
 import express from 'express';
 
 import {Users} from '../controllers/user';
+import {Wallets} from '../controllers/wallet';
 
 export const router = express.Router();
 
 const user = new Users();
+const wallet = new Wallets();
 
 //users endpoints
 router.route("/users")
@@ -12,14 +14,10 @@ router.route("/users")
 .get(user.GetUserController)
 .put(user.UpdateUserController)  
 
-// admin wallets endpoits
 router.route("/wallets")
-.post()
-.get()
-
-router.route("/wallets/:wallet_id")
-.get()
-.put()
+.post(wallet.CreateWallet)
+.get(wallet.GetWallet)
+.put(wallet.UpdateWallet)
 
 // admin transactions endpoints
 router.route("/transactions")
@@ -39,12 +37,15 @@ router.route("/admin/users/:user_id")
 .delete(user.DeleteUserController)
 
 // user wallet endpoint
-router.route("/admin/:user_id/wallet/:wallet_id")
-.get()
-.put()
+router.route("/admin/wallets/")
+.get(wallet.GetWallets)
+
+router.route("/admin/wallets/:wallet_id")
+.get(wallet.AdminGetWallet)
+.put(wallet.AdminUpdateWallet)
 
 // user transactions endpoint
-router.route("/user/:user_id/transactions")
+router.route("/users/:user_id/transactions")
 .get()
-router.route("/user/:user_id/transactions/:transaction_id")
+router.route("/users/:user_id/transactions/:transaction_id")
 .get()

@@ -6,3 +6,5 @@ type Wallet = {
     CreatedAt: Date;
     UpdatedAt: Date;
 }
+
+export default Wallet;

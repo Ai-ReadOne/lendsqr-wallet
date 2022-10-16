@@ -83,7 +83,6 @@ export class Users{
       let user: User = req.body;
 
       DBConnection('user').update(user).where({'id': user_id})
-      // 
       .then((sucess) => {
          if (!sucess){
             res.status(404).json({message:"invalid update credentials"});
@@ -105,7 +104,6 @@ export class Users{
       let user: User = req.body;
 
       DBConnection('user').update(user).where({'id': user_id})
-      // 
       .then((sucess) => {
          if (!sucess){
             res.status(404).json({message:"invalid update credentials"});
@@ -136,7 +134,6 @@ export class Users{
          }
 
          res.status(204).json({"message": "user info has been deleted succesfully"});
-
       }).catch((e) => {
 
        res.status(500).json(e);
