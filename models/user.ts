@@ -1,4 +1,3 @@
-
 type User = {
     ID: string;
     FirstName: string;
