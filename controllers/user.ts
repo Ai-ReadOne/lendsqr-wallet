@@ -1,125 +1,86 @@
 import {request, response} from 'express';
 import {v4 as uuid} from 'uuid';
-
+import dotenv from 'dotenv';
 
 import User from '../models/user'
 import DBConnection from '../config/database';
+import UserServices from '../services/user';
+// import { CreateToken } from '../utilities/auth';
+
+dotenv.config();
+const services = new UserServices();
 
 export class Users{
 
-   CreateUserController(req: typeof request, res: typeof response): void {
+   async CreateUserController(req: typeof request, res: typeof response): Promise<void> {
       let user: User = req.body;
 
-      if (req.headers.is_admin){
-         console.log(true)
-         user.IsAdmin = true;
-      }
-      user.ID = uuid();
-
-      DBConnection.insert(user).into('user').then(() => {
-         res.status(200).json(user);
-
-       }).catch((e) => {
-
-        res.status(500).json({error: e.sqlMessage});
-       });
-   }
-
-   GetUsersController(req: typeof request, res: typeof response): void {
-      if (!req.headers.is_admin || req.headers.is_admin == 'false'){
-         res.status(401).json({error: "unauthorized user !"});
+      const createdUser =  await services.createUser(user);
+      if (createdUser.error){
+         res.status(500).json(createdUser.error);
          return;
       }
 
-      DBConnection.select().from('user').then((result) => {
-         res.status(200).json(result);
-
-       }).catch((e) => {
-         res.status(500).json(e.sqlMessage);
-
-       });
+      res.status(201).json(createdUser.data);
    }
 
-   GetUserController(req: typeof request, res: typeof response): void {
-      let user_id = req.headers.user_id
+   async GetUsersController(res: typeof response): Promise<void> {
+      const usersRecord = await services.getUsers();
+      if (usersRecord.error){
+         res.status(500).json(usersRecord.error);
+         return;
+      }
 
-      DBConnection.select().from('user').where({'id': user_id})
-      .then((result) => {
-         if (result.length != 0) {
-            res.status(200).json(result);
-         } else {
-            res.status(404).json({"error": "user not found"});
-         }
-       })
-      .catch((e) => {
-         console.log(e)
-         res.status(500).json(e.sqlMessage);
-
-       });
-
+      res.status(200).json(usersRecord.data);
    }
 
-   AdminGetUserController(req: typeof request, res: typeof response): void {
+   async GetUserController(req: typeof request, res: typeof response): Promise<void> {
+      const user_id = req.headers.user_id;
+ 
+      const userRecord = await services.getUser(user_id);
+      if (userRecord.error){
+         res.status(500).json(userRecord.error);
+         return;
+      }
+
+      res.status(200).json(userRecord.data);
+   }
+
+   async AdminGetUserController(req: typeof request, res: typeof response): Promise<void> {
       let user_id = req.params.user_id
 
-      DBConnection.select().from('user').where({'id': user_id})
-      .then((result) => {
-         if (result.length != 0) {
-            res.status(200).json(result);
-         } else {
-            res.status(404).json({"error": "user not found"});
-         }
-       })
-      .catch((e) => {
-         console.log(e)
-         res.status(500).json(e.sqlMessage);
+      const userRecord = await services.getUser(user_id);
+      if (userRecord.error){
+         res.status(500).json(userRecord.error);
+         return;
+      }
 
-       });
-
+      res.status(200).json(userRecord.data);
    }
 
-   UpdateUserController(req: typeof request, res: typeof response): void {
+   async UpdateUserController(req: typeof request, res: typeof response): Promise<void> {
       let user_id = req.headers.user_id
-      let user: User = req.body;
+      let record: User = req.body;
 
-      DBConnection('user').update(user).where({'id': user_id})
-      .then((sucess) => {
-         if (!sucess){
-            res.status(404).json({message:"invalid update credentials"});
-            return;
-         }
-
-         res.status(204).json({"message": "user info has been updated succesfully"});
-
-      }).catch((e) => {
-
-       res.status(500).json(e);
-      });
-
+      const error = await services.updateUser(user_id, record);
+      if (error){
+         res.status(500).json(error);
+      }
+      res.status(204);
    }
 
-
-   AdminUpdateUserController(req: typeof request, res: typeof response): void {
+   async AdminUpdateUserController(req: typeof request, res: typeof response): Promise<void> {
       let user_id = req.params.user_id
-      let user: User = req.body;
+      let record: User = req.body;
 
-      DBConnection('user').update(user).where({'id': user_id})
-      .then((sucess) => {
-         if (!sucess){
-            res.status(404).json({message:"invalid update credentials"});
-            return;
-         }
-
-         res.status(204).json({"message": "user info has been updated succesfully"});
-
-      }).catch((e) => {
-
-       res.status(500).json(e);
-      });
-
+      const error = await services.updateUser(user_id, record);
+      if (error){
+         res.status(500).json(error);
+      }
+      res.status(204);
    }
 
-   DeleteUserController(req: typeof request, res: typeof response): void {
+   async DeleteUserController(req: typeof request, res: typeof response): Promise<void> {
       let user_id = req.params.user_id
 
       if (req.headers.is_admin  != 'true'){
@@ -134,94 +95,6 @@ export class Users{
          }
 
          res.status(204).json({"message": "user info has been deleted succesfully"});
-      }).catch((e) => {
-
-       res.status(500).json(e);
-      });
-
-   }
-}
-
-export class AdminUsers{
-
-   CreateUserController(req: typeof request, res: typeof response): void {
-      let user: User = req.body;
-      user.ID = uuid();
-      user.IsAdmin = true;
-
-      DBConnection.insert(user).into('user').then(() => {
-         res.status(200).json(user);
-
-       }).catch((e) => {
-
-        res.status(500).json(e.sqlMessage);
-       });
-   }
-
-   GetUsersController(req: typeof request, res: typeof response): void {
-      let header = req.headers;
-      console.log(header);
-
-      DBConnection.select().from('user').then((result) => {
-         res.status(200).json(result);
-
-       }).catch((e) => {
-         res.status(500).json(e.sqlMessage);
-
-       });
-   }
-
-   GetUserController(req: typeof request, res: typeof response): void {
-      let user_id = req.params.user_id
-
-      DBConnection.select().from('user').where({'id': user_id})
-      .then((result) => {
-         if (result.length != 0) {
-            res.status(200).json(result);
-         } else {
-            res.status(404).json({"error": "user not found"});
-         }
-       })
-      .catch((e) => {
-         console.log(e)
-         res.status(500).json(e.sqlMessage);
-
-       });
-
-   }
-
-   UpdateUserController(req: typeof request, res: typeof response): void {
-      let user_id = req.params.user_id
-      let user: User = req.body;
-
-      DBConnection('user').update(user).where({'id': user_id})
-      .then((sucess) => {
-         if (!sucess){
-            res.status(404).json({message:"invalid update credentials"});
-            return;
-         }
-
-         res.status(204).json({"message": "user info has been updated succesfully"});
-
-      }).catch((e) => {
-
-       res.status(500).json(e);
-      });
-
-   }
-
-   DeleteUserController(req: typeof request, res: typeof response): void {
-      let user_id = req.params.user_id
-
-      DBConnection.delete().from('user').where({'id': user_id})
-      .then((sucess) => {
-         if (!sucess){
-            res.status(404).json({message:"invalid delete credentials"});
-            return;
-         }
-
-         res.status(204).json({"message": "user info has been deleted succesfully"});
-
       }).catch((e) => {
 
        res.status(500).json(e);

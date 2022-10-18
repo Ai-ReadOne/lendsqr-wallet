@@ -21,7 +21,9 @@ DBConnection.raw("SELECT VERSION()").then(() => {
 wallet.use(express.json());
 
 // declare api endpoints
+// wallet.use('/api/v1/register', )
+// wallet.use('/api/v1/login', )
 wallet.use("/api/v1", router);
 
-wallet.listen(port, () => console.log(`wallet api running and listening on  port ${port}`))
 
+wallet.listen(port, () => console.log(`wallet api running and listening on  port ${port}`))

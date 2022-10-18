@@ -1,25 +1,100 @@
-// import { CreateUserController } from "../controllers/user";
-// import User from '../models/user';
-// import {v4 as uuid} from 'uuid';
+import User from '../models/user';
+import {v4 as uuid} from 'uuid';
 
-// import { CreateUser as cru, GetUsers as gu} from "../repos/user";
+import DBConnection from '../config/database';
 
-// // interface IUserServices {
-// //     CreateUser(user: User): User | void;
-// //     GetUsers(companyId: string): [User] | void;
-// //     GetUser(companyId: string, userId: string): User | void;
-// //     UpdateUser(companyId: string, userId: string, user: User): User | void;
-// //     DeleteUser(companyId: string, userId: string, user: User): string | void;
-// // }
+class UserServices {
 
+    async createUser(user: User): Promise<{data: any, error: any}> {
+        var data: any;
+        var error: any;
 
-//  export function CreateUser(user: User): any {
-//     user.ID = uuid();
+        user.ID = uuid();
 
-// //    return user;
-//     return cru(user);
-// }
+        await DBConnection('user').insert(user)
+        .then( async () => {
+            const userRecord = await this.getUser(user.ID);
+            
+            data = userRecord.data;
+            error = userRecord.error;
+        })
+        .catch((err) => {
+            error = err.sqlMessage;
+        });
 
-// export function GetUsers(): any {
-//     return gu();
-// }
+        return {data, error};
+    }
+
+    async getUsers(): Promise<{data: any, error: any}>{
+        var data: any;
+        var error: any;
+
+        DBConnection('user').select()
+        .then((result) =>{
+            if (!result){
+                error = {error: "unexpected error while fecthing records"};
+                return;
+            }
+            data = result;
+        })
+        .catch((err) => {
+            error = err;
+        })
+            
+        return {data, error};
+    }
+
+    async getUser(id: any): Promise<{data: any, error: any}>{
+        var data: any;
+        var error: any;
+
+        await DBConnection('user').where({'id': id}).first()
+        .then((user) => {
+            if (!user){
+                error = {error: "user record not found"};
+                return;
+            }
+            data =  user;
+        })
+        .catch((err) => {
+            console.log(err);
+            error = err;
+        });
+
+        return {data, error};
+    }
+
+    async updateUser(user_id: any, record: User): Promise<{error: any}> {
+        var error: any;
+
+        await DBConnection('user').update(record).where({'id': user_id})
+        .then((result) => {
+            if (result == 0){
+                error = {error: "no user matches update parameter"}
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+        
+        return error;
+    }
+    
+    async deleteUser(user_id: any): Promise<{error: any}> {
+        var error: any;
+
+        await DBConnection('user').delete().where({'id': user_id})
+        .then((result) => {
+            if (result == 0){
+                error = {error: "no user matches update parameter"}
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+        
+        return error;
+    }
+}
+
+export default UserServices;
