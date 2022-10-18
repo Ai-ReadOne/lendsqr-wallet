@@ -7,73 +7,75 @@ import Wallet from '../models/wallet'
 
 export class Wallets {
 
-    CreateWallet(req: typeof request, res: typeof response){
-        let is_admin = req.headers.is_admin;
-        let wallet: Wallet  = req.body;
+   CreateWallet(req: typeof request, res: typeof response){
+      let is_admin = req.headers.is_admin;
+      let wallet: Wallet  = req.body;
 
-        DBConnection('wallet').insert(wallet)
-        .then((result) => {
-            res.status(201).json(result)
-        })
-        .catch((e) => {
-            res.json(e)
-        })
+      wallet.ID = uuid();
 
-        console.log(res.status(201).json(wallet), is_admin)
-    }
+      DBConnection('wallet').insert(wallet)
+      .then((result) => {
+         res.status(201).json(result)
+      })
+      .catch((e) => {
+         res.json(e)
+      })
 
-    GetWallets(req: typeof request, res: typeof response){
-        if (!req.headers.is_admin || req.headers.is_admin == 'false'){
-            res.status(401).json({error: "unauthorized user !"});
-            return;
-         }
-   
-         DBConnection.select().from('wallet').then((result) => {
+      console.log(res.status(201).json(wallet), is_admin)
+   }
+
+   GetWallets(req: typeof request, res: typeof response){
+      if (!req.headers.is_admin || req.headers.is_admin == 'false'){
+         res.status(401).json({error: "unauthorized user !"});
+         return;
+      }
+
+      DBConnection.select().from('wallet').then((result) => {
+         res.status(200).json(result);
+
+         }).catch((e) => {
+         res.status(500).json(e.sqlMessage);
+
+         });
+   }
+
+   GetWallet(req: typeof request, res: typeof response){
+      let wallet_id = req.headers.wallet_id
+
+      DBConnection.select().from('wallet').where({'id': wallet_id})
+      .then((result) => {
+         if (result.length != 0) {
             res.status(200).json(result);
-   
-          }).catch((e) => {
-            res.status(500).json(e.sqlMessage);
-   
-          });
-    }
+         } else {
+            res.status(404).json({"error": "wallet not found"});
+         }
+      })
+      .catch((e) => {
+         console.log(e)
+         res.status(500).json(e.sqlMessage);
 
-    GetWallet(req: typeof request, res: typeof response){
-        let wallet_id = req.headers.wallet_id
+      });
 
-        DBConnection.select().from('wallet').where({'id': wallet_id})
-        .then((result) => {
-           if (result.length != 0) {
-              res.status(200).json(result);
-           } else {
-              res.status(404).json({"error": "wallet not found"});
-           }
-         })
-        .catch((e) => {
-           console.log(e)
-           res.status(500).json(e.sqlMessage);
-  
-         });
-  
-    }
+   }
 
-    AdminGetWallet(req: typeof request, res: typeof response){
-        let wallet_id = req.params.wallet_id
+   AdminGetWallet(req: typeof request, res: typeof response){
+      let wallet_id = req.params.wallet_id
 
-        DBConnection.select().from('wallet').where({'id': wallet_id})
-        .then((result) => {
-           if (result.length != 0) {
-              res.status(200).json(result);
-           } else {
-              res.status(404).json({"error": "wallet not found"});
-           }
-         })
-        .catch((e) => {
-           console.log(e)
-           res.status(500).json(e.sqlMessage);
-  
-         });
-  
-    }
+      DBConnection.select().from('wallet').where({'id': wallet_id})
+      .then((result) => {
+         if (result.length != 0) {
+            res.status(200).json(result);
+         } else {
+            res.status(404).json({"error": "wallet not found"});
+         }
+      })
+      .catch((e) => {
+         console.log(e)
+         res.status(500).json(e.sqlMessage);
+
+      });
+
+   }
 
     UpdateWallet(req: typeof request, res: typeof response){
         let wallet_id = req.headers.user_id

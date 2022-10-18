@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import knex from 'knex';
 
 dotenv.config({path: './.env'});
 
